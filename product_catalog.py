@@ -1,27 +1,32 @@
 from product_data import products
 # TODO: Step 1 - Print out the products to see the data that you are working with.
-
-
+print(products)
 
 # TODO: Step 2 - Create a list called customer_preferences and store the user preference in this list.
 
+customer_preferences = [] 
 
 response = ""
 while response != "N":
     print("Input a preference:")
     preference = input()
-    # Add the customer preference to the list
+    customer_preferences.append(preference) 
 
     response = input("Do you want to add another preference? (Y/N): ").upper()
-  
+
+print("Customer preferences:", customer_preferences)
 
 # TODO: Step 3 - Convert customer_preferences list to set to eliminate duplicates.
-
-
+unique_preferences = set(customer_preferences)
 
 # TODO: Step 4 - Convert the product tags to sets in order to allow for faster comparisons.
 converted_products = []
+for product in products:
+    new_product = product.copy()
+    new_product["tags"] = set(product["tags"])
+    converted_products.append(new_product)
 
+print(converted_products)
 
 
 
@@ -34,8 +39,7 @@ def count_matches(product_tags, customer_tags):
     Returns:
         int: The number of matching tags between the product and customer.
     '''
-    pass
-
+    return len(product_tags & customer_tags)
 
 
 
@@ -48,15 +52,34 @@ def recommend_products(products, customer_tags):
     Returns:
         list: A list of products containing product names and their match counts.
     '''
-    pass
+    results = []
 
+    # Loop over each product
+    for product in products:
+        matches = count_matches(product["tags"], customer_tags)
+        results.append({
+            "name": product["name"],
+            "matches": matches
+        })
 
+    # Sort by match count (highest first)
+    results.sort(key=lambda x: x["matches"], reverse=True)
+    return results
 
 # TODO: Step 7 - Call your function and print the results
+products = [
+    {"name": "Eco Water Bottle", "tags": {"eco-friendly", "durable"}},
+    {"name": "Running Shoes", "tags": {"lightweight", "durable"}},
+    {"name": "Reusable Grocery Bag", "tags": {"eco-friendly", "reusable"}},
+]
 
+customer_tags = {"eco-friendly", "durable"}
 
+recommendations = recommend_products(products, customer_tags)
+print(recommendations)
 
 
 # DESIGN MEMO (write below in a comment):
 # 1. What core operations did you use (e.g., intersections, loops)? Why?
+#
 # 2. How might this code change if you had 1000+ products?
