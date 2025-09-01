@@ -1,0 +1,84 @@
+from product_data import products
+# TODO: Step 1 - Print out the products to see the data that you are working with.
+print(products)
+
+# TODO: Step 2 - Create a list called customer_preferences and store the user preference in this list.
+
+customer_preferences = [] 
+
+response = ""
+while response != "N":
+    print("Input a preference:")
+    preference = input()
+    customer_preferences.append(preference) 
+
+    response = input("Do you want to add another preference? (Y/N): ").upper()
+
+print("Customer preferences:", customer_preferences)
+
+# TODO: Step 3 - Convert customer_preferences list to set to eliminate duplicates.
+unique_preferences = set(customer_preferences)
+
+# TODO: Step 4 - Convert the product tags to sets in order to allow for faster comparisons.
+converted_products = []
+for product in products:
+    new_product = product.copy()
+    new_product["tags"] = set(product["tags"])
+    converted_products.append(new_product)
+
+print(converted_products)
+
+
+
+# TODO: Step 5 - Write a function to calculate the number of matching tags
+def count_matches(product_tags, customer_tags):
+    '''
+    Args:
+        product_tags (set): A set of tags associated with a product.
+        customer_tags (set): A set of tags associated with the customer.
+    Returns:
+        int: The number of matching tags between the product and customer.
+    '''
+    return len(product_tags & customer_tags)
+
+
+
+# TODO: Step 6 - Write a function that loops over all products and returns a sorted list of matches
+def recommend_products(products, customer_tags):
+    '''
+    Args:
+        products (list): A list of product dictionaries.
+        customer_tags (set): A set of tags associated with the customer.
+    Returns:
+        list: A list of products containing product names and their match counts.
+    '''
+    results = []
+
+    for product in products:
+        matches = count_matches(product["tags"], customer_tags)
+        results.append({
+            "name": product["name"],
+            "matches": matches
+        })
+
+    results.sort(key=lambda x: x["matches"], reverse=True)
+    return results
+
+# TODO: Step 7 - Call your function and print the results
+products = [
+    {"name": "Eco Water Bottle", "tags": {"eco-friendly", "durable"}},
+    {"name": "Running Shoes", "tags": {"lightweight", "durable"}},
+    {"name": "Reusable Grocery Bag", "tags": {"eco-friendly", "reusable"}},
+]
+
+customer_tags = {"eco-friendly", "durable"}
+
+recommendations = recommend_products(products, customer_tags)
+print(recommendations)
+
+
+# DESIGN MEMO (write below in a comment):
+# 1. What core operations did you use (e.g., intersections, loops)? Why?
+#I used loops, intersections, sorting and appending. Loops to go through each product and compare it. Intersections to find the overlapping tags between the customer and product and sorting for the best match. Appending to build a new list of results.
+# 2. How might this code change if you had 1000+ products?
+#With 1000+ products, the code could still work but would likely add optimizations, Lopp would still be manageable.
